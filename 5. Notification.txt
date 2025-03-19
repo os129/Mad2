@@ -1,0 +1,258 @@
+MainActivity.java:
+
+package com.example.exno2;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Person;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
+
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    NotificationManager notificationManager;
+    NotificationChannel channel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button btnSimpleNotification = findViewById(R.id.btnSimpleNotification);
+        Button btnNotificationIcon = findViewById(R.id.btnNotificationIcon);
+        Button btnNotificationImage = findViewById(R.id.btnNotificationImage);
+        Button btnNotificationWithGroupConvo = findViewById(R.id.btnNotificationWithGroupConvo);
+        Button btnNotificationSemantic = findViewById(R.id.btnNotificationSemantic);
+
+        btnSimpleNotification.setOnClickListener(this);
+        btnNotificationIcon.setOnClickListener(this);
+        btnNotificationImage.setOnClickListener(this);
+        btnNotificationWithGroupConvo.setOnClickListener(this);
+        btnNotificationSemantic.setOnClickListener(this);
+
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        channel = new NotificationChannel("1", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnSimpleNotification:
+                simpleNotification();
+                break;
+            case R.id.btnNotificationIcon:
+                notificationWithIcon();
+                break;
+            case R.id.btnNotificationImage:
+                notificationWithImage();
+                break;
+            case R.id.btnNotificationWithGroupConvo:
+                notificationWithGroupConvo();
+                break;
+            case R.id.btnNotificationSemantic:
+                notificationSemantic();
+                break;
+        }
+    }
+
+    private void simpleNotification() {
+        Person jd = new Person.Builder().setName("John").setImportant(true).build();
+        Notification.MessagingStyle style = new Notification.MessagingStyle(jd)
+                .addMessage("Check me out", new Date().getTime(), jd);
+
+        Notification notification = new Notification.Builder(this, "1")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setStyle(style)
+                .build();
+
+        notificationManager.notify(1, notification);
+    }
+
+    private void notificationWithIcon() {
+        Person anupam = new Person.Builder()
+                .setName("Alexa")
+                .setIcon(Icon.createWithResource(this, R.drawable.index))  // Fixed Icon issue
+                .setImportant(true)
+                .build();
+
+        Notification.MessagingStyle style = new Notification.MessagingStyle(anupam)
+                .addMessage("Check out my latest article!", new Date().getTime(), anupam);
+
+        Notification notification = new Notification.Builder(this, "1")
+                .setSmallIcon(R.drawable.index)
+                .setStyle(style)
+                .build();
+
+        notificationManager.notify(2, notification);
+    }
+
+    private void notificationWithImage() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg); // Load image
+
+        Notification.BigPictureStyle style = new Notification.BigPictureStyle()
+                .bigPicture(bitmap) ; // Set the big image
+//                .bigLargeIcon(null); // Hide the large icon in expanded view
+
+        Notification notification = new Notification.Builder(this, "1")
+                .setSmallIcon(R.mipmap.ic_launcher) // Small icon for the notification
+                .setLargeIcon(bitmap) // Set large icon (optional)
+                .setContentTitle("New Image Notification")
+                .setContentText("Tap to see the image")
+                .setStyle(style) // Apply BigPictureStyle
+                .build();
+
+        notificationManager.notify(3, notification);
+    }
+
+
+    private void notificationWithGroupConvo() {
+        Person jd = new Person.Builder().setName("James").build();
+        Person anupam = new Person.Builder()
+                .setName("Ram")
+                .setIcon(Icon.createWithResource(this, R.drawable.sample_photo))
+                .setImportant(true)
+                .build();
+        Person bot = new Person.Builder().setName("Bot").setBot(true).build();
+
+        Notification.MessagingStyle style = new Notification.MessagingStyle(bot)
+                .addMessage("Hi guys!", new Date().getTime(), anupam)
+                .addMessage("Does this image look good?", new Date().getTime(), bot)
+                .addMessage("Looks good!", new Date().getTime(), jd)
+                .setConversationTitle("Sample Conversation")
+                .setGroupConversation(true);
+
+        Notification notification = new Notification.Builder(this, "1")
+                .setSmallIcon(R.drawable.bg)
+                .setStyle(style)
+                .build();
+
+        notificationManager.notify(4, notification);
+    }
+
+    private void notificationSemantic() {
+        Person jd = new Person.Builder().setName("Nagulesh").build();
+        Person anupam = new Person.Builder()
+                .setName("Nagulesh")
+                .setIcon(Icon.createWithResource(this, R.drawable.index))
+                .setImportant(true)
+                .build();
+        Person bot = new Person.Builder().setName("Bot").setBot(true).build();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("hi", "Notifications were read");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Action replyAction = new Notification.Action.Builder(
+                Icon.createWithResource(this, R.drawable.bg), "MARK READ", pendingIntent)
+                .build();
+
+        Notification.MessagingStyle style = new Notification.MessagingStyle(bot)
+                .addMessage("Hi guys!!", new Date().getTime(), anupam)
+                .addMessage("Does this image look good?", new Date().getTime(), bot)
+                .addMessage("Looks good!", new Date().getTime(), jd)
+                .setConversationTitle("Sample Conversation")
+                .setGroupConversation(true);
+
+        Notification notification = new Notification.Builder(this, "1")
+                .setSmallIcon(R.drawable.bg)
+                .setStyle(style)
+                .addAction(replyAction)
+                .build();
+
+        notificationManager.notify(5, notification);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String value = getIntent().getStringExtra("hi");
+            Toast.makeText(getApplicationContext(), value, Toast.LENGTH_LONG).show();
+        }
+    }
+}
+
+
+activity_main.xml:
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvNotificationManager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notification Manager"
+        android:textSize="34dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnSimpleNotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/teal_700"
+        android:text="Simple Notification" />
+    <Button
+        android:id="@+id/btnNotificationIcon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/teal_700"
+        android:text="Notification With Icon" />
+    <Button
+        android:id="@+id/btnNotificationImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/teal_700"
+        android:text="Notification With Image" />
+    <Button
+        android:id="@+id/btnNotificationWithGroupConvo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/teal_700"
+        android:text="Notification With Group Conversation" />
+    <Button
+        android:id="@+id/btnNotificationSemantic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/teal_700"
+        android:text="Notification Semantic Action" />
+
+</LinearLayout>

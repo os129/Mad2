@@ -1,0 +1,86 @@
+Activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?> 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"> 
+ 
+    <TextView 
+        android:id="@+id/titleText" 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content" 
+        android:text="NAGULESH N 22BCS071" 
+        android:textColor="#FF0000" 
+        android:textSize="25sp" 
+        android:textStyle="bold" 
+        android:gravity="center" 
+        android:layout_centerHorizontal="true" 
+        android:layout_marginTop="50dp"/> 
+ 
+    <TextView 
+        android:id="@+id/sensorOutput" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="Waiting for sensor data..." 
+        android:textSize="20sp" 
+        android:layout_below="@id/titleText" 
+        android:layout_centerHorizontal="true" 
+        android:layout_marginTop="20dp"/> 
+</RelativeLayout>  
+
+
+MainActivity.java:
+
+package com.example.naguleshgraphics; 
+
+import android.os.Bundle; 
+import androidx.appcompat.app.AppCompatActivity; 
+import android.hardware.Sensor; 
+import android.hardware.SensorEvent; 
+import android.hardware.SensorEventListener; 
+import android.hardware.SensorManager; 
+import android.widget.TextView; 
+ 
+public class MainActivity extends AppCompatActivity implements SensorEventListener { 
+
+    private SensorManager sensorManager; 
+    private Sensor proximitySensor; 
+    private TextView sensorOutput; 
+
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+
+        sensorOutput = findViewById(R.id.sensorOutput); 
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) { 
+            proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY); 
+        } else { 
+            sensorOutput.setText("No proximity sensor found!"); 
+        } 
+    } 
+
+    @Override 
+    protected void onResume() { 
+        super.onResume(); 
+        if (proximitySensor != null) { 
+            sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL); 
+        } 
+    } 
+
+    @Override 
+    protected void onPause() { 
+        super.onPause(); 
+        sensorManager.unregisterListener(this); 
+    } 
+
+    @Override 
+    public void onSensorChanged(SensorEvent event) { 
+        sensorOutput.setText("Proximity Sensor Value: " + event.values[0]); 
+    } 
+
+    @Override 
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {} 
+}  

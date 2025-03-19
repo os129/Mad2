@@ -1,0 +1,109 @@
+Activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?> 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/accelerometerData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Accelerometer Data"
+        android:textSize="18sp"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/temperatureData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature Data"
+        android:textSize="18sp"
+        android:padding="10dp" />
+
+</LinearLayout>
+
+
+MainActivity.java:
+
+package com.example.myapplication;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Sensor temperatureSensor;
+    private TextView accelerometerData;
+    private TextView temperatureData;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        accelerometerData = findViewById(R.id.accelerometerData);
+        temperatureData = findViewById(R.id.temperatureData);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        }
+
+        if (temperatureSensor != null) {
+            sensorManager.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            String accelData = "Accelerometer Data:\nX: " + x + "\nY: " + y + "\nZ: " + z;
+            accelerometerData.setText(accelData);
+        }
+
+        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            float temperature = event.values[0];
+            String tempData = "Ambient Temperature: " + temperature + "°C";
+            temperatureData.setText(tempData);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        }
+        if (temperatureSensor != null) {
+            sensorManager.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+}
+

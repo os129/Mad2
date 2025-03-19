@@ -1,0 +1,120 @@
+Code for Activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?> 
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:tools="http://schemas.android.com/tools" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:orientation="vertical" 
+    android:padding="16dp" 
+    android:gravity="center"> 
+
+    <!-- ImageView with better spacing and background --> 
+    <ImageView 
+        android:id="@+id/imageView" 
+        android:layout_width="250dp" 
+        android:layout_height="300dp" 
+        android:layout_marginBottom="20dp" 
+        android:layout_gravity="center" 
+        android:scaleType="centerCrop" 
+        android:background="@color/cardview_dark_background" 
+        android:contentDescription="Image" /> 
+
+    <!-- Button to load image 1 --> 
+    <Button 
+        android:id="@+id/button" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_marginBottom="10dp" 
+        android:text="Load Image 1" 
+        android:textAllCaps="true" 
+        android:textColor="@android:color/white" 
+        android:padding="12dp"/> 
+
+    <!-- Button to load image 2 --> 
+    <Button 
+        android:id="@+id/button2" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_marginBottom="10dp" 
+        android:text="Load Image 2" 
+        android:textAllCaps="true" 
+        android:textColor="@android:color/white" 
+        android:padding="12dp"/> 
+
+    <TextView 
+        android:id="@+id/yourName" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="20dp" 
+        android:text="NAGULESH N 22BCS071" 
+        android:textSize="18sp" 
+        android:textColor="@android:color/black" 
+        android:textStyle="bold" 
+        android:gravity="center" /> 
+
+</LinearLayout>
+
+
+Code for MainActivity.java:
+
+package com.example.exno6;  
+
+import android.os.Bundle;  
+import android.support.v7.app.AppCompatActivity;  
+import android.view.View;  
+import android.widget.Button;  
+import android.widget.ImageView;  
+import androidx.appcompat.app.AppCompatActivity;  
+
+public class MainActivity extends AppCompatActivity {  
+
+    ImageView img;  
+    Button bt1, bt2;  
+
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+
+        bt1 = (Button)findViewById(R.id.button);  
+        bt2 = (Button)findViewById(R.id.button2);  
+        img = (ImageView)findViewById(R.id.imageView);  
+
+        bt1.setOnClickListener(new View.OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                new Thread(new Runnable() {  
+                    @Override  
+                    public void run() {  
+                        img.post(new Runnable() {  
+                            @Override  
+                            public void run() {  
+                                img.setImageResource(R.drawble.india1);  
+                            }  
+                        });  
+                    }  
+                }).start();  
+            }  
+        });  
+
+        bt2.setOnClickListener(new View.OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                new Thread(new Runnable() {  
+                    @Override  
+                    public void run() {  
+                        img.post(new Runnable() {  
+                            @Override  
+                            public void run() {  
+                                img.setImageResource(R.drawable.india2);  
+                            }  
+                        });  
+                    }  
+                }).start();  
+            }  
+        });  
+    }  
+}  
+

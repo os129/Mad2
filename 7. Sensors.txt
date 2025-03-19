@@ -1,0 +1,76 @@
+Code for Activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?> 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:orientation="vertical" 
+    android:padding="16dp" > 
+ 
+    <TextView 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content" 
+        android:text="MADHANRAJ P 22BCS056" 
+        android:textColor="#FF0000" 
+        android:textSize="50px" 
+        android:layout_marginBottom="16dp"/> 
+ 
+    <ListView 
+        android:id="@+id/sensorListView" 
+        android:layout_width="match_parent" 
+        android:layout_height="0dp" 
+        android:layout_weight="1" /> 
+ 
+</LinearLayout> 
+
+
+Code for MainActivity.java:
+
+package com.example.nagulesh_exno7; 
+ 
+import android.support.v7.app.AppCompatActivity; 
+import android.os.Bundle; 
+import android.hardware.Sensor; 
+import android.hardware.SensorEvent; 
+import android.hardware.SensorEventListener; 
+import android.hardware.SensorManager; 
+import android.os.Bundle; 
+import android.widget.ArrayAdapter; 
+import android.widget.ListView; 
+ 
+import java.util.ArrayList; 
+ 
+public class MainActivity extends AppCompatActivity { 
+ 
+    private SensorManager sensorManager; 
+    private ListView sensorListView; 
+    private ArrayAdapter<String> adapter; 
+    private ArrayList<String> sensorList; 
+ 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+ 
+        sensorListView = findViewById(R.id.sensorListView); 
+        sensorList = new ArrayList<>(); 
+ 
+        // Get the SensorManager system service 
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
+ 
+        // Get the list of all sensors available on the device 
+        if (sensorManager != null) { 
+            // Get all sensors 
+            java.util.List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL); 
+ 
+            // Loop through the sensors and add their names to the list 
+            for (Sensor sensor : sensors) { 
+                sensorList.add(sensor.getName()); 
+            } 
+ 
+            // Set up an adapter to display the list of sensor names 
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sensorList); 
+            sensorListView.setAdapter(adapter); 
+        } 
+    }
+}

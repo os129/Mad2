@@ -47,7 +47,7 @@ Code for Activity_main.xml:
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
         android:layout_marginTop="20dp" 
-        android:text="NAGULESH N 22BCS071" 
+        android:text="Name" 
         android:textSize="18sp" 
         android:textColor="@android:color/black" 
         android:textStyle="bold" 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                         img.post(new Runnable() {  
                             @Override  
                             public void run() {  
-                                img.setImageResource(R.drawble.india1);  
+                                img.setImageResource(R.drawable.india1);  
                             }  
                         });  
                     }  

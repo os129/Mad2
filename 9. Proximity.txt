@@ -34,7 +34,7 @@ MainActivity.java:
 package com.example.naguleshgraphics; 
 
 import android.os.Bundle; 
-import androidx.appcompat.app.AppCompatActivity; 
+import android.support.v7.app.AppCompatActivity; 
 import android.hardware.Sensor; 
 import android.hardware.SensorEvent; 
 import android.hardware.SensorEventListener; 
